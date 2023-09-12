@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mepay/blocs/auth/auth_bloc.dart';
 import 'package:mepay/shared/theme.dart';
 import 'package:mepay/ui/pages/profile_edit_page.dart';
+import 'package:mepay/ui/pages/profile_edit_pin_page.dart';
 import 'package:mepay/ui/widgets/button.dart';
 import 'package:mepay/ui/widgets/profile_menu_item.dart';
 
@@ -100,7 +101,14 @@ class ProfilePage extends StatelessWidget {
                         onTap: () async {
                           if (await Navigator.pushNamed(context, '/pin') ==
                               true) {
-                            Navigator.pushNamed(context, '/edit-pin');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileEditPinPage(
+                                  user: state.data,
+                                ),
+                              ),
+                            );
                           }
                         },
                       ),

@@ -5,6 +5,7 @@ import 'package:mepay/models/sign_up_form_model.dart';
 import 'package:mepay/models/user_edit_form_model.dart';
 import 'package:mepay/models/user_model.dart';
 import 'package:mepay/services/auth_service.dart';
+import 'package:mepay/services/wallet_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -81,6 +82,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             name: event.data.name,
             username: event.data.username,
             email: event.data.email,
+          );
+
+          emit(AuthSuccess(updatedUser));
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      if (event is AuthUpdatePin) {
+        try {
+          emit(AuthLoading());
+
+          await WalletService().updatePin(event.oldPin, event.newPin);
+
+          final updatedUser = event.user.copyWith(
+            pin: event.newPin,
           );
 
           emit(AuthSuccess(updatedUser));

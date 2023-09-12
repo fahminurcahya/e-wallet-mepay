@@ -42,3 +42,18 @@ class AuthUpdateUser extends AuthEvent {
   @override
   List<Object> get props => [data, user];
 }
+
+class AuthUpdatePin extends AuthEvent {
+  final String oldPin;
+  final String newPin;
+  final UserModel user;
+
+  const AuthUpdatePin(
+    this.user,
+    this.oldPin,
+    this.newPin,
+  );
+
+  @override
+  List<Object> get props => [user, oldPin, newPin];
+}
