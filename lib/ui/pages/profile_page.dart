@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mepay/blocs/auth/auth_bloc.dart';
+import 'package:mepay/shared/shared_method.dart';
 import 'package:mepay/shared/theme.dart';
 import 'package:mepay/ui/pages/profile_edit_page.dart';
 import 'package:mepay/ui/pages/profile_edit_pin_page.dart';
@@ -16,7 +17,16 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Profile'),
       ),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthInitial) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/sign-in', (route) => false);
+          }
+          if (state is AuthFailed) {
+            showCustomSnacknar(context, state.e);
+          }
+        },
         builder: (context, state) {
           if (state is AuthSuccess) {
             return ListView(
@@ -130,7 +140,9 @@ class ProfilePage extends StatelessWidget {
                       ProfileMenuItem(
                         iconurl: 'assets/ic_logout.png',
                         title: 'Logout',
-                        onTap: () {},
+                        onTap: () {
+                          context.read<AuthBloc>().add(AuthLogout());
+                        },
                       )
                     ],
                   ),
