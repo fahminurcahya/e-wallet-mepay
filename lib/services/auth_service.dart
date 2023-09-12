@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mepay/models/sign_in_form_model.dart';
 import 'package:mepay/models/sign_up_form_model.dart';
+import 'package:mepay/models/user_edit_form_model.dart';
 import 'package:mepay/models/user_model.dart';
 import 'package:mepay/shared/shared_values.dart';
 
@@ -123,6 +124,33 @@ class AuthService {
         throw 'unauthenticated';
       }
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUser(UserEditFormModel data) async {
+    try {
+      print(data.toJson());
+
+      final token = await getToken();
+
+      final res = await http.put(
+        Uri.parse(
+          '$baseUrl/users',
+        ),
+        body: data.toJson(),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print(res.body);
+
+      if (res.statusCode != 200) {
+        throw jsonDecode(res.body)['message'];
+      }
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }

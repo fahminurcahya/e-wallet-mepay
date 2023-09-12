@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mepay/blocs/auth/auth_bloc.dart';
+import 'package:mepay/models/user_edit_form_model.dart';
+import 'package:mepay/models/user_model.dart';
 
 import '../../shared/theme.dart';
 import '../widgets/button.dart';
 import '../widgets/form.dart';
 
-class ProfileEditPage extends StatelessWidget {
-  const ProfileEditPage({super.key});
+class ProfileEditPage extends StatefulWidget {
+  final UserModel user;
+
+  const ProfileEditPage({
+    super.key,
+    required this.user,
+  });
+
+  @override
+  State<ProfileEditPage> createState() => _ProfileEditPageState();
+}
+
+class _ProfileEditPageState extends State<ProfileEditPage> {
+  final usernameController = TextEditingController(text: '');
+  final nameController = TextEditingController(text: '');
+  final emailController = TextEditingController(text: '');
+  final passwordController = TextEditingController(text: '');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    usernameController.text = widget.user.username!;
+    nameController.text = widget.user.name!;
+    emailController.text = widget.user.email!;
+    passwordController.text = widget.user.password!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,61 +44,85 @@ class ProfileEditPage extends StatelessWidget {
           'Edit profile',
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24
-        ),
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Container(
-            padding: const EdgeInsets.all(22),
-            margin: const EdgeInsets.only(
-                bottom: 50.0
-            ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: whiteColor
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CustomFormField(
-                  title: 'Username',
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/profile-edit-success', (route) => false);
+          }
+        },
+        builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            children: [
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                padding: const EdgeInsets.all(22),
+                margin: const EdgeInsets.only(bottom: 50.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20), color: whiteColor),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomFormField(
+                      title: 'Username',
+                      controller: usernameController,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      title: 'Full Name',
+                      controller: nameController,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      title: 'Email Address',
+                      controller: emailController,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomFormField(
+                      title: 'Password',
+                      obscureText: true,
+                      controller: passwordController,
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    CustomFilledButton(
+                      title: 'Update Now',
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                              AuthUpdateUser(
+                                widget.user,
+                                UserEditFormModel(
+                                  email: emailController.text,
+                                  name: nameController.text,
+                                  username: usernameController.text,
+                                  password: passwordController.text,
+                                  pin: widget.user.pin,
+                                ),
+                              ),
+                            );
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const CustomFormField(
-                  title: 'Full Name',
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const CustomFormField(
-                  title: 'Email Address',
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const CustomFormField(
-                  title: 'Password',
-                  obscureText: true,
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomFilledButton(
-                  title: 'Update Now',
-                  onPressed: (){
-                    Navigator.pushNamed(context, '/profile-edit-success');
-                  },
-                )
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

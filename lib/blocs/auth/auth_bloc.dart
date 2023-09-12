@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mepay/models/sign_in_form_model.dart';
 import 'package:mepay/models/sign_up_form_model.dart';
+import 'package:mepay/models/user_edit_form_model.dart';
 import 'package:mepay/models/user_model.dart';
 import 'package:mepay/services/auth_service.dart';
 
@@ -65,6 +66,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final UserModel user = await AuthService().login(res);
 
           emit(AuthSuccess(user));
+        } catch (e) {
+          emit(AuthFailed(e.toString()));
+        }
+      }
+
+      if (event is AuthUpdateUser) {
+        try {
+          emit(AuthLoading());
+
+          await AuthService().updateUser(event.data);
+
+          final updatedUser = event.user.copyWith(
+            name: event.data.name,
+            username: event.data.username,
+            email: event.data.email,
+          );
+
+          emit(AuthSuccess(updatedUser));
         } catch (e) {
           emit(AuthFailed(e.toString()));
         }

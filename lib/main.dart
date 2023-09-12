@@ -14,8 +14,6 @@ import 'package:mepay/ui/pages/profile_edit_success.dart';
 import 'package:mepay/ui/pages/profile_page.dart';
 import 'package:mepay/ui/pages/sign_in_page.dart';
 import 'package:mepay/ui/pages/sign_up_page.dart';
-import 'package:mepay/ui/pages/sign_up_set_ktp_page.dart';
-import 'package:mepay/ui/pages/sign_up_set_profile_page.dart';
 import 'package:mepay/ui/pages/sign_up_success_page.dart';
 import 'package:mepay/ui/pages/splash_page.dart';
 import 'package:mepay/ui/pages/topup_amount_page.dart';
@@ -60,7 +58,6 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const HomePage(),
           '/profile': (context) => const ProfilePage(),
           '/pin': (context) => const PinPage(),
-          '/profile-edit': (context) => const ProfileEditPage(),
           '/edit-pin': (context) => const ProfileEditPinPage(),
           '/profile-edit-success': (context) => const ProfileEditSuccess(),
           '/topup': (context) => const TopupPage(),

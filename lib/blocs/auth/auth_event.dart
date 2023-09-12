@@ -33,3 +33,12 @@ class AuthLogin extends AuthEvent {
 }
 
 class AuthGetCurrent extends AuthEvent {}
+
+class AuthUpdateUser extends AuthEvent {
+  final UserModel user;
+  final UserEditFormModel data;
+  const AuthUpdateUser(this.user, this.data);
+
+  @override
+  List<Object> get props => [data, user];
+}
